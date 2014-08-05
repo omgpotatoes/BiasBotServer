@@ -2,6 +2,7 @@
 <%@ page session="false" %>
 <html>
 <head>
+    <link type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap/css/bootstrap.css" rel="stylesheet" />
 	<title>Home</title>
 </head>
 <body>

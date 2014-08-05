@@ -43,6 +43,15 @@ public class Sentence {
     this.sentimentClass = sentimentClass;
   }
 
+  public String toHtmlFormattedString() {
+    // TODO testme!
+    String formattedString = "";
+    for (Token token: tokenArray) {
+      formattedString += " " + token.toHtmlFormattedString();
+    }
+    return formattedString;
+  }
+
   @Override
   public String toString() {
     return "Sentence [tokenArray=" + tokenArray + ", text=" + text

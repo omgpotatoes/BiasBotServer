@@ -1,10 +1,12 @@
 package org.alexanderconrad.bias_bot_server;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import org.alexanderconrad.bias_bot_server.nlp.RawText;
+import org.alexanderconrad.bias_bot_server.nlp.Sentence;
 import org.alexanderconrad.bias_bot_server.nlp.StanfordEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +57,14 @@ public class HomeController {
    */
   @RequestMapping(value = "/executeNlpProcess", method = RequestMethod.POST)
   public String executeNlpProcess(@ModelAttribute("SpringWeb")RawText rawText, ModelMap model) {
-    model.addAttribute("nlpProcessingResult", StanfordEngine.annotateText(rawText.getRawText().toString()));
+    ArrayList<Sentence> nlpOutput = StanfordEngine.annotateText(rawText.getRawText().toString());
+    model.addAttribute("nlpProcessingResult", nlpOutput);
+    // TODO move out of controller?
+    String formattedString = "";
+    for (Sentence sentence : nlpOutput) {
+      formattedString += " " + sentence.toHtmlFormattedString();
+    }
+    model.addAttribute("nlpProcessingResultPretty", formattedString);
     return "nlpProcessResult";
   }
 

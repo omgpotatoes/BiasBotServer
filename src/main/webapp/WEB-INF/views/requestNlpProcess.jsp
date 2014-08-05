@@ -1,20 +1,20 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <html>
 <head>
-    <title>BiasBotServer: request nlp processing</title>
+    <link type="text/css" href="${pageContext.request.contextPath}/resources/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <title>BiasBotServer | super-ugly request NLP processing form</title>
 </head>
 <body>
 
-<h2>text for processing:</h2>
-<form:form method="POST" action="/bias_bot_server/executeNlpProcess">
+<h2>super-ugly raw text input field:</h2>
+<form:form method="POST" action="executeNlpProcess">
    <table>
     <tr>
-        <td><form:label path="rawText">raw text:</form:label></td>
-        <td><form:input path="rawText" style="width:80%"/></td>
+        <td><form:textarea path="rawText" /></td>
     </tr>
     <tr>
         <td colspan="2">
-            <input type="submit" value="Submit"/>
+            <input type="submit" value="Process Me Through NLP!"/>
         </td>
     </tr>
 </table>  

@@ -26,16 +26,25 @@ public class StanfordEngine {
   private static Properties properties;
   private static StanfordCoreNLP stanfordCoreNlp;
 
+  /**
+   *
+   * @return
+   */
   public static StanfordCoreNLP getPipeline() {
     if (stanfordCoreNlp == null) {
       properties =  new Properties();
       properties.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, sentiment");
-//      properties.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment");
+//      properties.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment");  // dcoref annotators esploding memory usage, and not needed right now
       stanfordCoreNlp = new StanfordCoreNLP(properties);
     }
     return stanfordCoreNlp;
   }
 
+  /**
+   *
+   * @param text
+   * @return
+   */
   public static ArrayList<Sentence> annotateText(String text) {
     ArrayList<Sentence> sentenceList = new ArrayList<Sentence>();
     Annotation document = new Annotation(text);
@@ -59,21 +68,21 @@ public class StanfordEngine {
 //        System.out.println("DEBUG : tokenSentimentTree: "+ tokenSentimentTree);
 //        int tokenSentimentClass = RNNCoreAnnotations.getPredictedClass(tokenSentimentTree);
 //        tokenArray.add(new Token(word, pos, ne, tokenSentimentClass, tokenSentimentTree));
-        tokenArray.add(new Token(word, pos, ne, 0, null));
-
-        // try to re-annotate this single token for naive fine-grained sentiment??
+        int sentimentCategory = 0;
+        // try to re-annotate this single token for naive fine-grained sentiment
         Annotation termAnnotate = new Annotation(word);
         try {
           getPipeline().annotate(termAnnotate);
           List<CoreMap> termSents = termAnnotate.get(SentencesAnnotation.class);
           for(CoreMap termSent: termSents) {
             Tree termAnnotateTree = termSent.get(AnnotatedTree.class);
-            int termSentimentClass = RNNCoreAnnotations.getPredictedClass(termAnnotateTree);
-            System.out.println("DEBUG : word="+word+", sentiment="+termSentimentClass);
+            sentimentCategory = RNNCoreAnnotations.getPredictedClass(termAnnotateTree);
+            System.out.println("DEBUG : word="+word+", sentiment="+sentimentCategory);
           }
         } catch (ArrayIndexOutOfBoundsException e) {
-          //this could happen for some shorter tokens, ie, punctuation?
+          // this could happen for some shorter tokens, ie, punctuation?
         }
+        tokenArray.add(new Token(word, pos, ne, sentimentCategory));
       }
 
       // this is the parse tree of the current sentence
@@ -89,7 +98,7 @@ public class StanfordEngine {
       System.out.println("DEBUG : Tree sentimentTree:" + sentimentTree.toString());
 
       System.out.println("DEBUG : predictions : "+RNNCoreAnnotations.getPredictions(sentimentTree).toString());
-      System.out.println("DEBUG : NodeVector : "+RNNCoreAnnotations.getNodeVector(sentimentTree).toString());
+//      System.out.println("DEBUG : NodeVector : "+RNNCoreAnnotations.getNodeVector(sentimentTree).toString());
 
       // this is the text of the sentence (?)
       String sentenceText = sentence.get(TextAnnotation.class);
