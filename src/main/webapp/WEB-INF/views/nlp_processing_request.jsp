@@ -7,7 +7,7 @@
 <body>
 
 <h2>super-ugly raw text input field:</h2>
-<form:form method="POST" action="executeNlpProcess">
+<form:form method="POST" action="nlp_document">
    <table>
     <tr>
         <td><form:textarea path="rawText" /></td>

@@ -9,7 +9,8 @@
 <h2>super-ugly NLP output:</h2>
    <table>
     <tr>
-        <td>${nlpProcessingResult}</td>
+        <td>${nlpSentences}</td>
+        <td>${nlpParseTrees}</td>
     </tr>
 </table>
 

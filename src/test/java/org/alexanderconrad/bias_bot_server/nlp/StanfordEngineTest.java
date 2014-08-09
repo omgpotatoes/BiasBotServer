@@ -34,7 +34,8 @@ public class StanfordEngineTest {
   @Test
   public void testAnnotateTextNormal1() {
     String sampleText = "Dick Cheney's latest hit single, \"I Hate Kittens and Rainbows\", is stupendous and awesome and fantastic!";
-    List<Sentence> annotatedSentences = StanfordEngine.annotateText(sampleText);
+    Document nlpOutput = StanfordEngine.annotateText(sampleText);
+    List<Sentence> annotatedSentences = nlpOutput.getSentences();
     Assert.assertEquals(1, annotatedSentences.size());
     Assert.assertEquals(3, annotatedSentences.get(0).getSentimentClass());
     Assert.assertEquals(sampleText, annotatedSentences.get(0).getText());
@@ -48,7 +49,8 @@ public class StanfordEngineTest {
     String sampleText1 = "I hate Barak Obama's guts, that damn stinking facist commie muslim!";
     String sampleText2 = "He's also an ugly dumb atheist socialism!";
     String sampleText3 = "At least he makes some OK baklava.";
-    List<Sentence> annotatedSentences = StanfordEngine.annotateText(sampleText1+" "+sampleText2+" "+sampleText3);
+    Document nlpOutput = StanfordEngine.annotateText(sampleText1+" "+sampleText2+" "+sampleText3);
+    List<Sentence> annotatedSentences = nlpOutput.getSentences();
     Assert.assertEquals(3, annotatedSentences.size());
     Assert.assertEquals(0, annotatedSentences.get(0).getSentimentClass());
     Assert.assertEquals(sampleText1, annotatedSentences.get(0).getText());

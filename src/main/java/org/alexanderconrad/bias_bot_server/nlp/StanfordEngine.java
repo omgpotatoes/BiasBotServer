@@ -45,8 +45,9 @@ public class StanfordEngine {
    * @param text
    * @return
    */
-  public static ArrayList<Sentence> annotateText(String text) {
+  public static Document annotateText(String text) {
     ArrayList<Sentence> sentenceList = new ArrayList<Sentence>();
+    ArrayList<Tree> parseTreeList = new ArrayList<Tree>();
     Annotation document = new Annotation(text);
     getPipeline().annotate(document);
     List<CoreMap> sentences = document.get(SentencesAnnotation.class);
@@ -92,19 +93,19 @@ public class StanfordEngine {
 //      SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 
       // this is the sentiment label for the sentence
-      Tree sentimentTree = sentence.get(AnnotatedTree.class);
+      Tree parseTree = sentence.get(AnnotatedTree.class);
       // possible values are 0 = strong negative, 1 = weak negative, 2 = neutral, 3 = weak positive, 4 = strong positive
-      int sentimentClass = RNNCoreAnnotations.getPredictedClass(sentimentTree);
-      System.out.println("DEBUG : Tree sentimentTree:" + sentimentTree.toString());
+      int sentimentClass = RNNCoreAnnotations.getPredictedClass(parseTree);
+      System.out.println("DEBUG : Tree sentimentTree:" + parseTree.toString());
 
-      System.out.println("DEBUG : predictions : "+RNNCoreAnnotations.getPredictions(sentimentTree).toString());
+      System.out.println("DEBUG : predictions : "+RNNCoreAnnotations.getPredictions(parseTree).toString());
 //      System.out.println("DEBUG : NodeVector : "+RNNCoreAnnotations.getNodeVector(sentimentTree).toString());
 
       // this is the text of the sentence (?)
       String sentenceText = sentence.get(TextAnnotation.class);
 
       sentenceList.add(new Sentence(tokenArray, sentenceText, sentimentClass));
-
+      parseTreeList.add(parseTree);
     }
 
     // This is the coreference link graph
@@ -116,7 +117,7 @@ public class StanfordEngine {
 //      document.get(CorefChainAnnotation.class);
 //    System.out.println("DEBUG : Map<Integer, CorefChain> graph:" + graph.toString());
 
-    return sentenceList;
+    return new Document(sentenceList, parseTreeList);
 
   }
 
